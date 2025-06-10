@@ -1,7 +1,6 @@
 
-import { BarChart3, Code2, TrendingUp, Settings, Play, History, Moon, Sun } from "lucide-react";
+import { BarChart3, Code2, TrendingUp, Settings, Play, History } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
 import {
   Sidebar,
   SidebarContent,
@@ -12,11 +11,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 
 interface AppSidebarProps {
   activeTab: string;
@@ -33,29 +29,20 @@ const navigation = [
 ];
 
 function AppSidebarContent({ activeTab, onTabChange }: AppSidebarProps) {
-  const { theme, setTheme } = useTheme();
   const { state } = useSidebar();
 
   return (
-    <Sidebar className="border-r border-trading-accent/20">
-      <SidebarHeader className="p-6 border-b border-trading-accent/20">
+    <Sidebar className="border-r border-gray-200 bg-white">
+      <SidebarHeader className="p-6 border-b border-gray-200 bg-white">
         <div className="flex items-center justify-between">
           <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
-            <h1 className="text-xl font-bold text-trading-accent">QuantBacktest</h1>
-            <p className="text-sm text-trading-muted mt-1">Professional Trading Backtester</p>
+            <h1 className="text-xl font-bold text-blue-600">QuantBacktest</h1>
+            <p className="text-sm text-gray-600 mt-1">Professional Trading Backtester</p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="ml-2"
-          >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-          </Button>
         </div>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -67,6 +54,10 @@ function AppSidebarContent({ activeTab, onTabChange }: AppSidebarProps) {
                       onClick={() => onTabChange(item.id)}
                       isActive={activeTab === item.id}
                       tooltip={item.name}
+                      className={cn(
+                        "hover:bg-gray-100 text-gray-700",
+                        activeTab === item.id && "bg-blue-100 text-blue-800 border border-blue-200"
+                      )}
                     >
                       <Icon size={18} />
                       <span>{item.name}</span>
@@ -79,15 +70,15 @@ function AppSidebarContent({ activeTab, onTabChange }: AppSidebarProps) {
         </SidebarGroup>
       </SidebarContent>
       
-      <SidebarFooter className="p-4 border-t border-trading-accent/20">
-        <div className={cn("bg-trading-accent/10 rounded-md p-3 transition-all", state === "collapsed" && "p-2")}>
+      <SidebarFooter className="p-4 border-t border-gray-200 bg-white">
+        <div className={cn("bg-gray-50 border border-gray-200 rounded-md p-3 transition-all", state === "collapsed" && "p-2")}>
           <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
-            <div className="text-xs text-trading-muted mb-1">Portfolio Value</div>
-            <div className="text-lg font-bold text-trading-success">$125,847.92</div>
-            <div className="text-xs text-trading-success">+5.84% Today</div>
+            <div className="text-xs text-gray-600 mb-1">Portfolio Value</div>
+            <div className="text-lg font-bold text-green-600">$125,847.92</div>
+            <div className="text-xs text-green-600">+5.84% Today</div>
           </div>
           <div className={cn("transition-opacity", state === "expanded" && "opacity-0 absolute")}>
-            <div className="text-xs font-bold text-trading-success text-center">$125K</div>
+            <div className="text-xs font-bold text-green-600 text-center">$125K</div>
           </div>
         </div>
       </SidebarFooter>

@@ -25,19 +25,19 @@ const Index = () => {
         return <ResultsDashboard results={backtestResults} />;
       case "history":
         return (
-          <div className="p-6 flex items-center justify-center h-96">
+          <div className="p-6 flex items-center justify-center h-96 bg-white">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-trading-text mb-2">Trading History</h3>
-              <p className="text-trading-muted">View your past backtest runs and strategies</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Trading History</h3>
+              <p className="text-gray-600">View your past backtest runs and strategies</p>
             </div>
           </div>
         );
       case "settings":
         return (
-          <div className="p-6 flex items-center justify-center h-96">
+          <div className="p-6 flex items-center justify-center h-96 bg-white">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-trading-text mb-2">Settings</h3>
-              <p className="text-trading-muted">Configure your trading preferences and data sources</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Settings</h3>
+              <p className="text-gray-600">Configure your trading preferences and data sources</p>
             </div>
           </div>
         );
@@ -47,12 +47,12 @@ const Index = () => {
   };
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark">
+    <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light">
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-trading-bg">
+        <div className="min-h-screen flex w-full bg-white">
           <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-          <div className="flex-1 overflow-auto">
-            <div className="p-4 border-b border-trading-accent/20">
+          <div className="flex-1 overflow-auto bg-white">
+            <div className="p-4 border-b border-gray-200 bg-white">
               <SidebarTrigger />
             </div>
             {renderContent()}
