@@ -4,8 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "@/components/Dashboard";
-import { StrategyEditor } from "@/components/StrategyEditor";
-import { BacktestRunner } from "@/components/BacktestRunner";
+import { StrategyBacktestEditor } from "@/components/StrategyBacktestEditor";
 import { ResultsDashboard } from "@/components/ResultsDashboard";
 
 const Index = () => {
@@ -13,14 +12,22 @@ const Index = () => {
   const [strategy, setStrategy] = useState("");
   const [backtestResults, setBacktestResults] = useState(null);
 
+  const handleNavigateToResults = () => {
+    setActiveTab("results");
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
         return <Dashboard />;
       case "strategy":
-        return <StrategyEditor onStrategyChange={setStrategy} />;
-      case "backtest":
-        return <BacktestRunner onBacktestComplete={setBacktestResults} />;
+        return (
+          <StrategyBacktestEditor 
+            onStrategyChange={setStrategy} 
+            onBacktestComplete={setBacktestResults}
+            onNavigateToResults={handleNavigateToResults}
+          />
+        );
       case "results":
         return <ResultsDashboard results={backtestResults} />;
       case "history":
