@@ -1,109 +1,98 @@
-import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  Code2,
-  BarChart3,
-  Clock,
-  Settings,
-  Menu,
-} from "lucide-react";
 
-interface SidebarProps {
+import { BarChart3, Code2, TrendingUp, Settings, Play, History, Moon, Sun } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+
+interface AppSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
-export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const navigation = [
+  { id: "dashboard", name: "Dashboard", icon: BarChart3 },
+  { id: "strategy", name: "Strategy", icon: Code2 },
+  { id: "backtest", name: "Backtest", icon: Play },
+  { id: "results", name: "Results", icon: TrendingUp },
+  { id: "history", name: "History", icon: History },
+  { id: "settings", name: "Settings", icon: Settings },
+];
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "strategy", label: "Algorithm & Backtest", icon: Code2 },
-    { id: "results", label: "Results", icon: BarChart3 },
-    { id: "history", label: "History", icon: Clock },
-    { id: "settings", label: "Settings", icon: Settings },
-  ];
+function AppSidebarContent({ activeTab, onTabChange }: AppSidebarProps) {
+  const { theme, setTheme } = useTheme();
+  const { state } = useSidebar();
 
   return (
-    <>
-      <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetTrigger asChild>
+    <Sidebar className="border-r border-trading-accent/20">
+      <SidebarHeader className="p-6 border-b border-trading-accent/20">
+        <div className="flex items-center justify-between">
+          <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
+            <h1 className="text-xl font-bold text-trading-accent">QuantBacktest</h1>
+            <p className="text-sm text-trading-muted mt-1">Professional Trading Backtester</p>
+          </div>
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
-            onClick={toggleSidebar}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="ml-2"
           >
-            <Menu className="h-5 w-5" />
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0 pt-6 w-80">
-          <div className="flex flex-col h-full">
-            <div className="px-4 py-2 text-lg font-bold text-trading-text">
-              Trading Platform
-            </div>
-            <div className="flex-1 py-4">
-              <ul className="space-y-1">
-                {menuItems.map((item) => (
-                  <li key={item.id}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "justify-start px-4 py-2 w-full font-normal text-trading-text hover:bg-accent hover:text-accent-foreground",
-                        activeTab === item.id && "bg-accent text-accent-foreground"
-                      )}
-                      onClick={() => {
-                        onTabChange(item.id);
-                        setIsSidebarOpen(false); // Close sidebar after tab change
-                      }}
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      onClick={() => onTabChange(item.id)}
+                      isActive={activeTab === item.id}
+                      tooltip={item.name}
                     >
-                      <item.icon className="w-4 h-4 mr-2" />
-                      {item.label}
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="p-4 border-t border-trading-border text-center text-trading-muted text-xs">
-              © {new Date().getFullYear()} Your Company
-            </div>
+                      <Icon size={18} />
+                      <span>{item.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      
+      <SidebarFooter className="p-4 border-t border-trading-accent/20">
+        <div className={cn("bg-trading-accent/10 rounded-md p-3 transition-all", state === "collapsed" && "p-2")}>
+          <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
+            <div className="text-xs text-trading-muted mb-1">Portfolio Value</div>
+            <div className="text-lg font-bold text-trading-success">$125,847.92</div>
+            <div className="text-xs text-trading-success">+5.84% Today</div>
           </div>
-        </SheetContent>
-      </Sheet>
-      <aside className="hidden md:flex flex-col w-64 border-r border-trading-border bg-trading-surface">
-        <div className="px-4 py-2 text-lg font-bold text-trading-text">
-          Trading Platform
+          <div className={cn("transition-opacity", state === "expanded" && "opacity-0 absolute")}>
+            <div className="text-xs font-bold text-trading-success text-center">$125K</div>
+          </div>
         </div>
-        <div className="flex-1 py-4">
-          <ul className="space-y-1">
-            {menuItems.map((item) => (
-              <li key={item.id}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "justify-start px-4 py-2 w-full font-normal text-trading-text hover:bg-accent hover:text-accent-foreground",
-                    activeTab === item.id && "bg-accent text-accent-foreground"
-                  )}
-                  onClick={() => onTabChange(item.id)}
-                >
-                  <item.icon className="w-4 h-4 mr-2" />
-                  {item.label}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="p-4 border-t border-trading-border text-center text-trading-muted text-xs">
-          © {new Date().getFullYear()} Your Company
-        </div>
-      </aside>
-    </>
+      </SidebarFooter>
+    </Sidebar>
   );
-};
+}
+
+export { AppSidebarContent as Sidebar };
