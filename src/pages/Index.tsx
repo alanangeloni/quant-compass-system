@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Menu } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "@/components/Dashboard";
 import { StrategyBacktestEditor } from "@/components/StrategyBacktestEditor";
@@ -12,7 +11,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [strategy, setStrategy] = useState("");
   const [backtestResults, setBacktestResults] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleNavigateToResults = () => {
     setActiveTab("results");
@@ -62,19 +61,10 @@ const Index = () => {
           <Sidebar 
             activeTab={activeTab} 
             onTabChange={setActiveTab} 
-            isOpen={sidebarOpen}
-            setIsOpen={setSidebarOpen}
+            isCollapsed={sidebarCollapsed}
+            setIsCollapsed={setSidebarCollapsed}
           />
           <div className="flex-1 overflow-auto bg-white">
-            <div className="p-4 border-b border-gray-200 bg-white">
-              <button 
-                onClick={() => setSidebarOpen(true)}
-                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              >
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Open sidebar</span>
-              </button>
-            </div>
             {renderContent()}
           </div>
         </div>

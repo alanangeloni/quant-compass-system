@@ -3,9 +3,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Play, Save, RefreshCw, BarChart3, Settings } from "lucide-react";
+import { Play, Save, RefreshCw, BarChart3, Settings, Edit2 } from "lucide-react";
 
 const defaultStrategy = `# Template Algorithm
 """
@@ -92,6 +93,8 @@ export const StrategyBacktestEditor = ({
   onNavigateToResults 
 }: StrategyBacktestEditorProps) => {
   const [strategy, setStrategy] = useState(defaultStrategy);
+  const [algorithmName, setAlgorithmName] = useState("Template Algorithm");
+  const [isEditingName, setIsEditingName] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
   const [isQuickBacktest, setIsQuickBacktest] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -147,162 +150,169 @@ export const StrategyBacktestEditor = ({
     onNavigateToResults();
   };
 
+  const handleNameSave = () => {
+    setIsEditingName(false);
+  };
+
   return (
-    <div className="h-full flex flex-col bg-white">
-      <div className="border-b border-gray-200 bg-white px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">Template Algorithm</h1>
+    <div className="h-full flex bg-white">
+      {/* Main Algorithm Editor - Left Side */}
+      <div className="flex-1 flex flex-col border-r border-gray-200">
+        <div className="border-b border-gray-200 bg-white px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              {isEditingName ? (
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={algorithmName}
+                    onChange={(e) => setAlgorithmName(e.target.value)}
+                    className="text-xl font-semibold border-none p-0 h-auto shadow-none focus-visible:ring-0"
+                    onBlur={handleNameSave}
+                    onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-semibold text-gray-900">{algorithmName}</h1>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsEditingName(true)}
+                    className="p-1 h-6 w-6"
+                  >
+                    <Edit2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </Button>
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700" onClick={handleSave}>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700" onClick={handleValidate} disabled={isValidating}>
+                {isValidating ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
+                Build Algorithm
+              </Button>
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                Enter Contest
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-              Save
-            </Button>
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-              Build Algorithm
-            </Button>
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-              Enter Contest
-            </Button>
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-              Collaborate
-            </Button>
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-              API Reference
-            </Button>
-          </div>
+        </div>
+
+        <div className="flex-1 p-6">
+          <Textarea
+            value={strategy}
+            onChange={(e) => setStrategy(e.target.value)}
+            className="h-full font-mono text-sm bg-white border-gray-200 text-gray-900 resize-none"
+            placeholder="Write your trading strategy here..."
+          />
         </div>
       </div>
 
-      <div className="flex-1 flex">
-        <div className="flex-1 flex flex-col">
-          <Tabs defaultValue="algorithm" className="flex-1 flex flex-col">
-            <div className="border-b border-gray-200 bg-white px-6">
-              <TabsList className="bg-transparent h-auto p-0">
-                <TabsTrigger 
-                  value="algorithm" 
-                  className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none pb-3 px-4"
-                >
-                  Algorithm
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="backtest" 
-                  className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 rounded-none pb-3 px-4"
-                >
-                  Backtest
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent value="algorithm" className="flex-1 m-0 p-6">
-              <div className="h-full">
-                <Textarea
-                  value={strategy}
-                  onChange={(e) => setStrategy(e.target.value)}
-                  className="h-full font-mono text-sm bg-white border-gray-200 text-gray-900 resize-none"
-                  placeholder="Write your trading strategy here..."
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="backtest" className="flex-1 m-0 p-6">
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <Button 
-                    onClick={runQuickBacktest}
-                    disabled={isQuickBacktest}
-                    variant="outline"
-                    className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                  >
-                    {isQuickBacktest ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                    Backtest
-                  </Button>
-                  <Button 
-                    onClick={runFullBacktest}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Run Full Backtest
-                  </Button>
-                </div>
-
-                {isQuickBacktest && (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Progress</span>
-                      <span className="text-gray-900 font-mono">{progress}%</span>
-                    </div>
-                    <Progress value={progress} className="h-2" />
-                    <p className="text-sm text-blue-600">{currentStep}</p>
-                  </div>
-                )}
-
-                <div className="bg-gray-50 rounded-md p-4 h-64 overflow-y-auto font-mono text-sm">
-                  <div className="space-y-1 text-gray-600">
-                    <div>[2024-06-10 14:30:15] Strategy loaded successfully</div>
-                    <div>[2024-06-10 14:30:16] Historical data fetched (365 days)</div>
-                    <div>[2024-06-10 14:30:17] Backtesting engine initialized</div>
-                    {isQuickBacktest && (
-                      <>
-                        <div className="text-blue-600">[2024-06-10 14:30:18] {currentStep}</div>
-                        <div className="text-gray-900 animate-pulse">Processing...</div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+      {/* Backtest Panel - Right Side */}
+      <div className="w-96 bg-gray-50 flex flex-col">
+        <div className="border-b border-gray-200 bg-white px-6 py-4">
+          <h2 className="text-lg font-semibold text-gray-900">Backtest</h2>
         </div>
 
-        <div className="w-80 border-l border-gray-200 bg-white p-6">
-          <div className="space-y-6">
+        <div className="flex-1 p-6 space-y-6">
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Button 
+                onClick={runQuickBacktest}
+                disabled={isQuickBacktest}
+                variant="outline"
+                className="flex-1 border-blue-600 text-blue-600 hover:bg-blue-50"
+                size="sm"
+              >
+                {isQuickBacktest ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                Quick Backtest
+              </Button>
+            </div>
+            
+            <Button 
+              onClick={runFullBacktest}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              size="sm"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Full Backtest
+            </Button>
+          </div>
+
+          {isQuickBacktest && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">Progress</span>
+                <span className="text-gray-900 font-mono">{progress}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+              <p className="text-sm text-blue-600">{currentStep}</p>
+            </div>
+          )}
+
+          <div className="space-y-4">
             <div className="text-sm text-gray-600">
               <div className="mb-4">
-                <div className="text-gray-900 font-medium mb-2">10/17/2015 to 01/18/2017 $ 1000000</div>
+                <div className="text-gray-900 font-medium mb-2">10/17/2015 to 01/18/2017 $ 1,000,000</div>
               </div>
               
-              <div className="grid grid-cols-5 gap-4 text-center mb-4">
-                <div>
-                  <div className="font-medium text-gray-900">RETURNS</div>
-                  <div>--</div>
+              <div className="grid grid-cols-2 gap-4 text-center mb-4">
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-medium text-gray-900 text-xs">RETURNS</div>
+                  <div className="text-lg font-bold">--</div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-900">ALPHA</div>
-                  <div>--</div>
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-medium text-gray-900 text-xs">ALPHA</div>
+                  <div className="text-lg font-bold">--</div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-900">BETA</div>
-                  <div>--</div>
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-medium text-gray-900 text-xs">BETA</div>
+                  <div className="text-lg font-bold">--</div>
                 </div>
-                <div>
-                  <div className="font-medium text-gray-900">SHARPE</div>
-                  <div>--</div>
-                </div>
-                <div>
-                  <div className="font-medium text-gray-900">DRAWDOWN</div>
-                  <div>--</div>
+                <div className="bg-white p-3 rounded border">
+                  <div className="font-medium text-gray-900 text-xs">SHARPE</div>
+                  <div className="text-lg font-bold">--</div>
                 </div>
               </div>
 
-              <div className="text-gray-500 text-sm mb-4">
-                Build your algorithm (Ctrl+B) for a quick backtest, or run a Full Backtest for detailed metrics.
+              <div className="bg-white p-3 rounded border text-center">
+                <div className="font-medium text-gray-900 text-xs">MAX DRAWDOWN</div>
+                <div className="text-lg font-bold">--</div>
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-900">Logs</span>
-                <span className="text-sm text-gray-500">Runtime Errors</span>
+            <div className="text-gray-500 text-sm">
+              Build your algorithm (Ctrl+B) for a quick backtest, or run a Full Backtest for detailed metrics.
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-900">Logs</span>
+              <span className="text-sm text-gray-500">Runtime Errors</span>
+            </div>
+            <div className="bg-black rounded h-32 relative overflow-hidden p-2">
+              <div className="font-mono text-green-400 text-xs">
+                <div>[2024-06-10 14:30:15] Strategy loaded successfully</div>
+                <div>[2024-06-10 14:30:16] Historical data fetched (365 days)</div>
+                <div>[2024-06-10 14:30:17] Backtesting engine initialized</div>
+                {isQuickBacktest && (
+                  <>
+                    <div className="text-blue-400">[2024-06-10 14:30:18] {currentStep}</div>
+                    <div className="text-yellow-400 animate-pulse">Processing...</div>
+                  </>
+                )}
               </div>
-              <div className="bg-black rounded h-32 relative overflow-hidden">
-                <div className="absolute bottom-0 right-0 p-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                </div>
+              <div className="absolute bottom-2 right-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
               </div>
             </div>
           </div>
