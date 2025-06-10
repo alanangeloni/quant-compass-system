@@ -80,7 +80,7 @@ export const StrategyBacktestEditor = ({
   const [strategy, setStrategy] = useState(defaultStrategy);
   const [algorithmName, setAlgorithmName] = useState("Sample Algorithm for a Basic Strategy 1");
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
+  const [isBacktesting, setIsBacktesting] = useState(false);
   const [activeTab, setActiveTab] = useState("algorithm");
 
   const handleSave = () => {
@@ -88,20 +88,20 @@ export const StrategyBacktestEditor = ({
     onStrategyChange(strategy);
   };
 
-  const handleValidate = async () => {
-    setIsValidating(true);
+  const handleBacktest = async () => {
+    setIsBacktesting(true);
+    console.log("Running backtest");
     await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsValidating(false);
-    console.log("Strategy validated");
+    setIsBacktesting(false);
   };
 
   const handleNameSave = () => {
     setIsEditingName(false);
   };
 
-  const handleRunBacktest = () => {
+  const handleRunFullBacktest = () => {
     console.log("Running full backtest");
-    // Add backtest logic here
+    onNavigateToResults();
   };
 
   return (
@@ -160,27 +160,22 @@ export const StrategyBacktestEditor = ({
           
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
+              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700" onClick={handleSave}>
+                <Save className="h-4 w-4 mr-1" />
                 Save
               </Button>
               <Button 
                 variant="outline" 
                 size="sm" 
                 className="border-blue-600 text-blue-600 bg-blue-600 text-white" 
-                onClick={handleValidate} 
-                disabled={isValidating}
+                onClick={handleBacktest} 
+                disabled={isBacktesting}
               >
-                {isValidating ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : null}
-                Build Algorithm
+                {isBacktesting ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-1" />}
+                Backtest
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                Enter Contest
-              </Button>
-              <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
-                Collaborate
-              </Button>
               <Button variant="outline" size="sm" className="border-gray-300 text-gray-700">
                 API Reference
               </Button>
@@ -210,7 +205,7 @@ export const StrategyBacktestEditor = ({
         </div>
       </div>
 
-      {/* Backtest Panel - Right Side */}
+      {/* Right Sidebar */}
       <div className="w-80 bg-white flex flex-col">
         {/* Backtest Parameters */}
         <div className="border-b border-gray-200 p-4 bg-orange-50">
@@ -258,7 +253,7 @@ export const StrategyBacktestEditor = ({
             </div>
 
             <Button 
-              onClick={handleRunBacktest}
+              onClick={handleRunFullBacktest}
               className="w-full bg-green-600 hover:bg-green-700 text-white h-8 text-sm"
             >
               <Play className="h-3 w-3 mr-1" />
@@ -268,8 +263,7 @@ export const StrategyBacktestEditor = ({
 
           <div className="mt-4 p-3 bg-white rounded border">
             <div className="text-sm text-gray-600 mb-2">
-              Build your algorithm (Ctrl+B) to backtest with daily data.
-              Then, run a Full Backtest to use minute data.
+              Run a backtest to see your algorithm performance with the selected parameters.
             </div>
             <div className="grid grid-cols-4 gap-4 text-center text-xs">
               <div>
