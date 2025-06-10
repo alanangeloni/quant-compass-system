@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
@@ -75,17 +76,17 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-trading-bg min-h-screen">
+    <div className="p-4 space-y-4 bg-white min-h-screen">
       {/* Header Section */}
-      <div className="bg-trading-surface rounded-lg p-6 border border-trading-accent/20 backdrop-blur-sm">
+      <div className="bg-white">
         <div className="flex justify-between items-start mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-trading-text mb-2">Backtest Results</h2>
-            <div className="text-sm text-trading-muted">
-              <span>From 2003-01-03 to 2016-02-24 with $1,000,000 initial capital (daily data)</span>
+          <div className="text-sm text-gray-600">
+            <div className="mb-1">
+              <span className="font-medium">Settings:</span> From 2003-01-03 to 2016-02-24 with <span className="text-blue-600">$1,000,000</span> initial capital (daily data)
             </div>
-            <div className="text-sm text-trading-success mt-1">
-              ✓ Backtest complete
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Status:</span> 
+              <span className="text-green-600">✓ Backtest complete</span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -93,203 +94,276 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
               onClick={() => setIsAnimating(!isAnimating)}
               variant="outline"
               size="sm"
-              className="border-trading-accent/30"
+              className="text-xs"
             >
-              {isAnimating ? <Pause size={16} /> : <Play size={16} />}
+              {isAnimating ? <Pause size={14} /> : <Play size={14} />}
               {isAnimating ? "Pause" : "Animate"}
             </Button>
-            <Button className="bg-trading-accent hover:bg-trading-accent/80" size="sm">
+            <Button className="bg-gray-500 hover:bg-gray-600 text-white text-xs" size="sm">
               Live Trade Algorithm
             </Button>
-            <Button className="bg-trading-accent hover:bg-trading-accent/80" size="sm">
-              Share Results
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-xs" size="sm">
+              📤 Share Results
             </Button>
           </div>
-        </div>
-
-        {/* Key Metrics Row */}
-        <div className="grid grid-cols-8 gap-6 text-center">
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Total Returns</div>
-            <div className="text-xl font-bold text-trading-success">238.2%</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Benchmark Returns</div>
-            <div className="text-xl font-bold text-trading-text">174.4%</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Alpha</div>
-            <div className="text-xl font-bold text-trading-text">0.12</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Beta</div>
-            <div className="text-xl font-bold text-trading-text">0.38</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Sharpe</div>
-            <div className="text-xl font-bold text-trading-success">1.10</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Sortino</div>
-            <div className="text-xl font-bold text-trading-text">1.44</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Information Ratio</div>
-            <div className="text-xl font-bold text-trading-text">0.33</div>
-          </div>
-          <div>
-            <div className="text-xs text-trading-muted mb-1">Volatility</div>
-            <div className="text-xl font-bold text-trading-text">0.15</div>
-          </div>
-        </div>
-
-        <div className="mt-4 text-center">
-          <div className="text-xs text-trading-muted mb-1">Max Drawdown</div>
-          <div className="text-xl font-bold text-trading-danger">37.7%</div>
         </div>
       </div>
 
-      {/* Main Charts Section */}
-      <div className="grid grid-cols-4 gap-6">
+      {/* Main Content */}
+      <div className="grid grid-cols-5 gap-4">
         {/* Sidebar Navigation */}
         <div className="col-span-1">
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardContent className="p-4">
-              <div className="space-y-2">
-                <button className="w-full text-left px-3 py-2 text-sm bg-trading-accent text-white rounded">
+          <div className="bg-white border border-gray-200">
+            <div className="p-3">
+              <div className="space-y-1">
+                <button className="w-full text-left px-3 py-2 text-sm bg-blue-100 text-blue-800 border border-blue-200 rounded">
                   Results Overview
                 </button>
-                <button className="w-full text-left px-3 py-2 text-sm text-trading-muted hover:text-trading-text">
+                <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50">
                   Transaction Details
                 </button>
-                <button className="w-full text-left px-3 py-2 text-sm text-trading-muted hover:text-trading-text">
+                <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50">
                   Daily Positions & Gains
                 </button>
-                <button className="w-full text-left px-3 py-2 text-sm text-trading-muted hover:text-trading-text">
+                <button className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:bg-gray-50">
                   Log Output
                 </button>
               </div>
               
-              <div className="mt-6 pt-4 border-t border-trading-accent/20">
-                <div className="text-xs font-semibold text-trading-text mb-3">RISK METRICS</div>
-                <div className="space-y-2 text-xs">
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Returns</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Benchmark Returns</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Treasury Returns</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Alpha</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Beta</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Sharpe</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Sortino</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Information Ratio</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Volatility</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Benchmark Volatility</button>
-                  <button className="w-full text-left px-3 py-1 text-trading-muted hover:text-trading-text">Max Drawdown</button>
+              <div className="mt-4 pt-3 border-t border-gray-200">
+                <div className="text-xs font-medium text-gray-500 mb-2 tracking-wide">RISK METRICS</div>
+                <div className="space-y-1 text-xs">
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Returns</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Benchmark Returns</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Treasury Returns</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Alpha</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Beta</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Sharpe</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Sortino</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Information Ratio</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Volatility</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Benchmark Volatility</button>
+                  <button className="w-full text-left px-2 py-1 text-gray-600 hover:bg-gray-50 rounded">Max Drawdown</button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
-        {/* Charts Section */}
-        <div className="col-span-3 space-y-6">
-          {/* Enhanced Cumulative Performance Chart */}
-          <Card className="bg-trading-surface/80 backdrop-blur-sm border-trading-accent/20">
-            <CardHeader className="pb-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <div className="text-sm text-trading-muted mb-1">Cumulative performance:</div>
-                  <div className="flex gap-6 text-sm">
-                    <span className="text-trading-accent">■ Algorithm 302.02%</span>
-                    <span className="text-trading-danger">■ Benchmark (SPY) 185.06%</span>
-                  </div>
-                </div>
-                <div className="text-sm text-trading-muted">Week of Mar 8, 2015</div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <AnimatedChart 
-                data={equityCurveData} 
-                isAnimating={isAnimating}
-                animationSpeed={200}
-              />
-            </CardContent>
-          </Card>
+        {/* Main Content Area */}
+        <div className="col-span-4 space-y-4">
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4 mb-4">
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Total Returns</div>
+              <div className="text-2xl font-bold text-gray-900">238.2%</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Benchmark Returns</div>
+              <div className="text-2xl font-bold text-gray-900">174.4%</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Alpha</div>
+              <div className="text-2xl font-bold text-gray-900">0.12</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Beta</div>
+              <div className="text-2xl font-bold text-gray-900">0.38</div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-4 mb-4">
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Sharpe</div>
+              <div className="text-2xl font-bold text-red-600">1.10</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Sortino</div>
+              <div className="text-2xl font-bold text-gray-900">1.44</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Information Ratio</div>
+              <div className="text-2xl font-bold text-gray-900">0.33</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-500 mb-1">Volatility</div>
+              <div className="text-2xl font-bold text-gray-900">0.15</div>
+            </div>
+          </div>
 
-          {/* Enhanced Leverage Chart */}
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader className="pb-4">
-              <div className="text-sm text-trading-muted">Custom data: <span className="text-trading-accent">■ Leverage 0.41</span></div>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={leverageData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
-                  <YAxis stroke="#64748b" fontSize={12} domain={[0, 1]} />
+          <div className="text-center mb-6">
+            <div className="text-xs text-gray-500 mb-1">Max Drawdown</div>
+            <div className="text-2xl font-bold text-gray-900">37.7%</div>
+          </div>
+
+          {/* Cumulative Performance Chart */}
+          <div className="bg-white border border-gray-200">
+            <div className="p-3 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <div className="text-sm">
+                  <span className="text-gray-600">Cumulative performance: </span>
+                  <span className="text-blue-600">■ Algorithm 302.02%</span>
+                  <span className="text-red-600 ml-4">■ Benchmark (SPY) 185.06%</span>
+                </div>
+                <div className="text-sm text-gray-500">Week of Mar 8, 2015</div>
+              </div>
+            </div>
+            <div className="p-2">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={equityCurveData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="1 1" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                    tick={{ fontSize: 10 }}
+                  />
+                  <YAxis 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                    tick={{ fontSize: 10 }}
+                    tickFormatter={(value) => `${Math.round((value / 100000) * 100)}%`}
+                  />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: '#1a1f2e', 
-                      border: '1px solid #2563eb',
-                      borderRadius: '6px',
+                      backgroundColor: 'white', 
+                      border: '1px solid #d1d5db',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="strategy" 
+                    stroke="#2563eb" 
+                    strokeWidth={2}
+                    name="Algorithm"
+                    dot={false}
+                    strokeLinecap="round"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="benchmark" 
+                    stroke="#dc2626" 
+                    strokeWidth={2}
+                    name="Benchmark (SPY)"
+                    dot={false}
+                    strokeLinecap="round"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Leverage Chart */}
+          <div className="bg-white border border-gray-200">
+            <div className="p-3 border-b border-gray-200">
+              <div className="text-sm text-gray-600">
+                Custom data: <span className="text-blue-600">■ Leverage 0.41</span>
+              </div>
+            </div>
+            <div className="p-2">
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={leverageData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="1 1" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                  />
+                  <YAxis 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                    domain={[0, 1]}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #d1d5db',
+                      borderRadius: '4px',
                       fontSize: '12px'
                     }}
                   />
                   <Line 
                     type="monotone" 
                     dataKey="leverage" 
-                    stroke="#10b981" 
+                    stroke="#06b6d4" 
                     strokeWidth={2}
                     name="Leverage"
                     dot={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Enhanced Weekly Returns Chart */}
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader className="pb-4">
-              <div className="text-sm text-trading-muted">Weekly returns <span className="text-trading-success">$21,491</span></div>
-            </CardHeader>
-            <CardContent>
+          {/* Weekly Returns Chart */}
+          <div className="bg-white border border-gray-200">
+            <div className="p-3 border-b border-gray-200">
+              <div className="text-sm text-gray-600">
+                Weekly returns <span className="text-green-600">$21,491</span>
+              </div>
+            </div>
+            <div className="p-2">
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={weeklyReturnsData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="week" stroke="#64748b" fontSize={12} />
-                  <YAxis stroke="#64748b" fontSize={12} />
+                <BarChart data={weeklyReturnsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="1 1" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="week" 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                  />
+                  <YAxis 
+                    stroke="#6b7280" 
+                    fontSize={10}
+                    axisLine={true}
+                    tickLine={true}
+                  />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: '#1a1f2e', 
-                      border: '1px solid #2563eb',
-                      borderRadius: '6px',
+                      backgroundColor: 'white', 
+                      border: '1px solid #d1d5db',
+                      borderRadius: '4px',
                       fontSize: '12px'
                     }}
                   />
-                  <Bar dataKey="returns">
+                  <Bar dataKey="returns" stroke="#374151" strokeWidth={1}>
                     {weeklyReturnsData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.returns > 0 ? '#10b981' : '#ef4444'} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Transaction Summary */}
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader className="pb-4">
-              <div className="text-sm text-trading-muted">Transactions $72,556 bought, ($60,979) sold</div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-32 bg-trading-bg rounded border border-trading-accent/10 flex items-center justify-center">
-                <div className="text-center text-trading-muted">
+          {/* Transactions Chart */}
+          <div className="bg-white border border-gray-200">
+            <div className="p-3 border-b border-gray-200">
+              <div className="text-sm text-gray-600">
+                Transactions $72,556 bought, ($60,979) sold
+              </div>
+            </div>
+            <div className="p-2">
+              <div className="h-32 bg-gray-50 border border-gray-100 flex items-center justify-center">
+                <div className="text-center text-gray-500">
                   <div className="text-xs">Transaction visualization would go here</div>
                   <div className="text-xs mt-1">Showing buy/sell activity over time</div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
