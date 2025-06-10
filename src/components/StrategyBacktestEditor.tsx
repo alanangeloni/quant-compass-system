@@ -96,9 +96,6 @@ export const StrategyBacktestEditor = ({
   const [algorithmName, setAlgorithmName] = useState("Template Algorithm");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
-  const [isQuickBacktest, setIsQuickBacktest] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState("");
 
   const handleSave = () => {
     console.log("Saving strategy:", strategy);
@@ -110,44 +107,6 @@ export const StrategyBacktestEditor = ({
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsValidating(false);
     console.log("Strategy validated");
-  };
-
-  const runQuickBacktest = async () => {
-    setIsQuickBacktest(true);
-    setProgress(0);
-    
-    const steps = [
-      "Loading data...",
-      "Running backtest...",
-      "Calculating metrics..."
-    ];
-
-    for (let i = 0; i < steps.length; i++) {
-      setCurrentStep(steps[i]);
-      setProgress((i + 1) * 33);
-      await new Promise(resolve => setTimeout(resolve, 800));
-    }
-
-    setIsQuickBacktest(false);
-    setProgress(100);
-    setCurrentStep("Backtest completed!");
-  };
-
-  const runFullBacktest = async () => {
-    // Navigate to results page and run full backtest
-    const results = {
-      totalReturn: 23.67,
-      sharpeRatio: 1.82,
-      maxDrawdown: -8.42,
-      winRate: 67.3,
-      totalTrades: 245,
-      avgTradeReturn: 1.45,
-      volatility: 12.8,
-      calmarRatio: 2.81
-    };
-    
-    onBacktestComplete(results);
-    onNavigateToResults();
   };
 
   const handleNameSave = () => {
@@ -216,104 +175,24 @@ export const StrategyBacktestEditor = ({
         </div>
       </div>
 
-      {/* Backtest Panel - Right Side */}
+      {/* Logs Panel - Right Side */}
       <div className="w-96 bg-gray-50 flex flex-col">
         <div className="border-b border-gray-200 bg-white px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-900">Backtest</h2>
+          <h2 className="text-lg font-semibold text-gray-900">Logs</h2>
         </div>
 
-        <div className="flex-1 p-6 space-y-6">
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <Button 
-                onClick={runQuickBacktest}
-                disabled={isQuickBacktest}
-                variant="outline"
-                className="flex-1 border-blue-600 text-blue-600 hover:bg-blue-50"
-                size="sm"
-              >
-                {isQuickBacktest ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                Quick Backtest
-              </Button>
+        <div className="flex-1 p-6">
+          <div className="bg-black rounded h-full relative overflow-hidden p-4">
+            <div className="font-mono text-green-400 text-xs space-y-1">
+              <div>[2024-06-10 14:30:15] Strategy loaded successfully</div>
+              <div>[2024-06-10 14:30:16] Historical data fetched (365 days)</div>
+              <div>[2024-06-10 14:30:17] Backtesting engine initialized</div>
+              <div>[2024-06-10 14:30:18] Algorithm validation completed</div>
+              <div className="text-blue-400">[2024-06-10 14:30:19] Ready for backtesting</div>
+              <div className="text-yellow-400">[2024-06-10 14:30:20] Waiting for user input...</div>
             </div>
-            
-            <Button 
-              onClick={runFullBacktest}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              size="sm"
-            >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Full Backtest
-            </Button>
-          </div>
-
-          {isQuickBacktest && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Progress</span>
-                <span className="text-gray-900 font-mono">{progress}%</span>
-              </div>
-              <Progress value={progress} className="h-2" />
-              <p className="text-sm text-blue-600">{currentStep}</p>
-            </div>
-          )}
-
-          <div className="space-y-4">
-            <div className="text-sm text-gray-600">
-              <div className="mb-4">
-                <div className="text-gray-900 font-medium mb-2">10/17/2015 to 01/18/2017 $ 1,000,000</div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 text-center mb-4">
-                <div className="bg-white p-3 rounded border">
-                  <div className="font-medium text-gray-900 text-xs">RETURNS</div>
-                  <div className="text-lg font-bold">--</div>
-                </div>
-                <div className="bg-white p-3 rounded border">
-                  <div className="font-medium text-gray-900 text-xs">ALPHA</div>
-                  <div className="text-lg font-bold">--</div>
-                </div>
-                <div className="bg-white p-3 rounded border">
-                  <div className="font-medium text-gray-900 text-xs">BETA</div>
-                  <div className="text-lg font-bold">--</div>
-                </div>
-                <div className="bg-white p-3 rounded border">
-                  <div className="font-medium text-gray-900 text-xs">SHARPE</div>
-                  <div className="text-lg font-bold">--</div>
-                </div>
-              </div>
-
-              <div className="bg-white p-3 rounded border text-center">
-                <div className="font-medium text-gray-900 text-xs">MAX DRAWDOWN</div>
-                <div className="text-lg font-bold">--</div>
-              </div>
-            </div>
-
-            <div className="text-gray-500 text-sm">
-              Build your algorithm (Ctrl+B) for a quick backtest, or run a Full Backtest for detailed metrics.
-            </div>
-          </div>
-
-          <div className="border-t border-gray-200 pt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-900">Logs</span>
-              <span className="text-sm text-gray-500">Runtime Errors</span>
-            </div>
-            <div className="bg-black rounded h-32 relative overflow-hidden p-2">
-              <div className="font-mono text-green-400 text-xs">
-                <div>[2024-06-10 14:30:15] Strategy loaded successfully</div>
-                <div>[2024-06-10 14:30:16] Historical data fetched (365 days)</div>
-                <div>[2024-06-10 14:30:17] Backtesting engine initialized</div>
-                {isQuickBacktest && (
-                  <>
-                    <div className="text-blue-400">[2024-06-10 14:30:18] {currentStep}</div>
-                    <div className="text-yellow-400 animate-pulse">Processing...</div>
-                  </>
-                )}
-              </div>
-              <div className="absolute bottom-2 right-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-              </div>
+            <div className="absolute bottom-4 right-4">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
             </div>
           </div>
         </div>
