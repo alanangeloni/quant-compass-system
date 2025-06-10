@@ -79,7 +79,7 @@ def rebalance_portfolio(context, data):
         order_target_percent(stock, short_weight)
     
     # Log trades
-    log.info("Rebalanced portfolio: {} longs, {} shorts".format(len(long_stocks), len(short_stocks)))
+    log.info("Rebalanced portfolio: " + str(len(long_stocks)) + " longs, " + str(len(short_stocks)) + " shorts")
 
 def before_trading_start(context, data):
     # Run pipeline to get stock universe
@@ -124,6 +124,7 @@ export const StrategyBacktestEditor = ({
   const [isEditingName, setIsEditingName] = useState(false);
   const [isBacktesting, setIsBacktesting] = useState(false);
   const [isRunningFullBacktest, setIsRunningFullBacktest] = useState(false);
+  const [quickBacktestResults, setQuickBacktestResults] = useState(null);
 
   const handleSave = () => {
     console.log("Saving strategy:", strategy);
@@ -132,8 +133,21 @@ export const StrategyBacktestEditor = ({
 
   const handleBuildAlgorithm = async () => {
     setIsBacktesting(true);
-    console.log("Building algorithm");
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Building algorithm and running quick backtest");
+    
+    // Simulate quick backtest
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Generate quick results
+    const quickResults = {
+      returns: "2.14%",
+      alpha: "0.15",
+      beta: "0.42",
+      sharpe: "1.28",
+      drawdown: "-4.2%"
+    };
+    
+    setQuickBacktestResults(quickResults);
     setIsBacktesting(false);
   };
 
@@ -145,7 +159,7 @@ export const StrategyBacktestEditor = ({
     setIsRunningFullBacktest(true);
     console.log("Running full backtest with strategy:", strategy);
     
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
     const results = {
       strategy: strategy,
@@ -324,23 +338,33 @@ export const StrategyBacktestEditor = ({
             <div className="grid grid-cols-5 gap-2 text-center text-xs">
               <div>
                 <div className="text-gray-500 font-medium">RETURNS</div>
-                <div className="text-sm font-medium">--</div>
+                <div className="text-sm font-medium">
+                  {quickBacktestResults ? quickBacktestResults.returns : '--'}
+                </div>
               </div>
               <div>
                 <div className="text-gray-500 font-medium">ALPHA</div>
-                <div className="text-sm font-medium">--</div>
+                <div className="text-sm font-medium">
+                  {quickBacktestResults ? quickBacktestResults.alpha : '--'}
+                </div>
               </div>
               <div>
                 <div className="text-gray-500 font-medium">BETA</div>
-                <div className="text-sm font-medium">--</div>
+                <div className="text-sm font-medium">
+                  {quickBacktestResults ? quickBacktestResults.beta : '--'}
+                </div>
               </div>
               <div>
                 <div className="text-gray-500 font-medium">SHARPE</div>
-                <div className="text-sm font-medium">--</div>
+                <div className="text-sm font-medium">
+                  {quickBacktestResults ? quickBacktestResults.sharpe : '--'}
+                </div>
               </div>
               <div>
                 <div className="text-gray-500 font-medium">DRAWDOWN</div>
-                <div className="text-sm font-medium">--</div>
+                <div className="text-sm font-medium">
+                  {quickBacktestResults ? quickBacktestResults.drawdown : '--'}
+                </div>
               </div>
             </div>
             <div className="mt-3 text-xs text-gray-600 text-center">
@@ -371,7 +395,11 @@ export const StrategyBacktestEditor = ({
                 <div>[2024-06-10 14:30:18] Algorithm validation completed</div>
                 <div className="text-blue-400">[2024-06-10 14:30:19] Ready for backtesting</div>
                 {isBacktesting && (
-                  <div className="text-yellow-400">[2024-06-10 14:30:20] Building algorithm...</div>
+                  <>
+                    <div className="text-yellow-400">[2024-06-10 14:30:20] Building algorithm...</div>
+                    <div className="text-yellow-400">[2024-06-10 14:30:21] Running quick backtest...</div>
+                    <div className="text-yellow-400 animate-pulse">[2024-06-10 14:30:22] Calculating metrics...</div>
+                  </>
                 )}
                 {isRunningFullBacktest && (
                   <>
@@ -382,6 +410,9 @@ export const StrategyBacktestEditor = ({
                 )}
                 {!isBacktesting && !isRunningFullBacktest && (
                   <div className="text-white">[2024-06-10 14:30:20] Waiting for user input...</div>
+                )}
+                {quickBacktestResults && !isBacktesting && (
+                  <div className="text-green-400">[2024-06-10 14:30:23] Quick backtest completed - metrics updated</div>
                 )}
               </div>
             </div>
