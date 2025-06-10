@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Sheet,
@@ -14,14 +15,8 @@ import {
   Clock,
   Settings,
   Menu,
-  LayoutDashboard,
-  ListChecks,
-  LineChart,
-  ChevronsLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useSidebar } from "@/components/ui/sidebar";
-import { ModeToggle } from "@/components/ModeToggle";
 
 interface SidebarProps {
   activeTab: string;
@@ -29,6 +24,8 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const menuItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
     { id: "strategy", icon: Code, label: "Algorithm & Backtest" },
@@ -37,15 +34,13 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
     { id: "settings", icon: Settings, label: "Settings" },
   ];
 
-  const { isOpen, setIsOpen } = useSidebar();
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent side="left" className="w-64 p-0 border-r">
+      <SheetContent side="left" className="w-64 p-0 border-r bg-white">
         <div className="flex flex-col h-full">
-          <div className="px-6 py-4 border-b">
-            <SheetTitle className="text-lg font-semibold">Trading Platform</SheetTitle>
-            <SheetDescription>
+          <div className="px-6 py-4 border-b border-gray-200">
+            <SheetTitle className="text-lg font-semibold text-gray-900">Trading Platform</SheetTitle>
+            <SheetDescription className="text-gray-600">
               Manage your trading strategies and backtests.
             </SheetDescription>
           </div>
@@ -63,7 +58,7 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
                     )}
                     onClick={() => {
                       onTabChange(item.id);
-                      setIsOpen(false); // Close sidebar after tab change
+                      setIsOpen(false);
                     }}
                   >
                     <item.icon className="w-4 h-4 mr-2" />
@@ -74,9 +69,8 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
             </ul>
           </nav>
 
-          <div className="px-6 py-4 border-t">
-            <ModeToggle />
-            <p className="text-xs text-gray-500 mt-2">
+          <div className="px-6 py-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
               &copy; {new Date().getFullYear()} My Company
             </p>
           </div>
