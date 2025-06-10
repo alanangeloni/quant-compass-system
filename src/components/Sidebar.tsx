@@ -6,7 +6,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Home,
@@ -14,18 +13,17 @@ import {
   BarChart,
   Clock,
   Settings,
-  Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
 
-export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+export const Sidebar = ({ activeTab, onTabChange, isOpen, setIsOpen }: SidebarProps) => {
   const menuItems = [
     { id: "dashboard", icon: Home, label: "Dashboard" },
     { id: "strategy", icon: Code, label: "Algorithm & Backtest" },
