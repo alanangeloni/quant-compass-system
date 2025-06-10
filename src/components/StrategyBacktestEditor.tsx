@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -182,8 +183,7 @@ export const StrategyBacktestEditor = ({
       alpha: 0.12,
       beta: 0.38,
       volatility: 0.15,
-      isLiveExecution: true,
-      showExecution: true // Flag to show algorithm execution
+      showExecution: true // This flag tells ResultsDashboard to show the AlgorithmExecutionViewer
     };
     
     onBacktestComplete(results);
@@ -248,7 +248,7 @@ export const StrategyBacktestEditor = ({
                 Build Algorithm
               </Button>
               <Button
-                className="h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white"
+                className="h-8 text-xs bg-black hover:bg-gray-800 text-white"
               >
                 Enter Contest
               </Button>
@@ -264,8 +264,8 @@ export const StrategyBacktestEditor = ({
         </div>
 
         {/* Code Editor */}
-        <div className="flex-1 relative">
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gray-800 border-r border-gray-600 flex flex-col text-xs text-gray-400">
+        <div className="flex-1 relative bg-gray-900">
+          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gray-800 border-r border-gray-600 flex flex-col text-xs text-gray-400 z-10">
             {Array.from({ length: 80 }, (_, i) => (
               <div key={i + 1} className="h-5 px-2 flex items-center justify-end leading-5">
                 {i + 1}

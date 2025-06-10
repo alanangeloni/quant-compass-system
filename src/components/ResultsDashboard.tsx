@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
@@ -78,8 +77,8 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
 
   return (
     <div className="p-4 space-y-4 bg-white min-h-screen">
-      {/* Algorithm Execution Viewer - Show this first if we have strategy code and showExecution flag */}
-      {results.strategy && results.algorithmName && results.showExecution && (
+      {/* Algorithm Execution Viewer - Show this when showExecution is true */}
+      {results.showExecution && results.strategy && results.algorithmName && (
         <AlgorithmExecutionViewer 
           strategy={results.strategy} 
           algorithmName={results.algorithmName}
