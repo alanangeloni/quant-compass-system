@@ -33,13 +33,13 @@ def handle_data(context, data):
         if ma_short > ma_long and not context.bought:
             order_target_percent(context.security, 1.0)  # Invest 100%
             context.bought = True
-            log.info(f"BUY signal at ${current_price:.2f}")
+            log.info("BUY signal at $" + str(round(current_price, 2)))
             
         # Sell signal: short MA crosses below long MA  
         elif ma_short < ma_long and context.bought:
             order_target_percent(context.security, 0.0)  # Sell all
             context.bought = False
-            log.info(f"SELL signal at ${current_price:.2f}")
+            log.info("SELL signal at $" + str(round(current_price, 2)))
     
     # Record data for plotting
     record(price=current_price, ma_short=ma_short, ma_long=ma_long)
