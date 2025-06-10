@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Play, Save, RefreshCw, Settings, Edit2 } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const defaultStrategy = `"""
 This is a sample mean-reversion algorithm on Quantopian for you to
@@ -125,6 +125,7 @@ export const StrategyBacktestEditor = ({
   const [isBacktesting, setIsBacktesting] = useState(false);
   const [isRunningFullBacktest, setIsRunningFullBacktest] = useState(false);
   const [quickBacktestResults, setQuickBacktestResults] = useState(null);
+  const [chartData, setChartData] = useState([]);
 
   const handleSave = () => {
     console.log("Saving strategy:", strategy);
@@ -138,7 +139,7 @@ export const StrategyBacktestEditor = ({
     // Simulate quick backtest
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Generate quick results
+    // Generate quick results and chart data
     const quickResults = {
       returns: "2.14%",
       alpha: "0.15",
@@ -146,8 +147,19 @@ export const StrategyBacktestEditor = ({
       sharpe: "1.28",
       drawdown: "-4.2%"
     };
+
+    const quickChartData = [
+      { date: "Day 1", portfolio: 100000, benchmark: 100000 },
+      { date: "Day 5", portfolio: 101200, benchmark: 100800 },
+      { date: "Day 10", portfolio: 102140, benchmark: 101200 },
+      { date: "Day 15", portfolio: 103500, benchmark: 101800 },
+      { date: "Day 20", portfolio: 104200, benchmark: 102100 },
+      { date: "Day 25", portfolio: 105800, benchmark: 102500 },
+      { date: "Day 30", portfolio: 102140, benchmark: 101900 },
+    ];
     
     setQuickBacktestResults(quickResults);
+    setChartData(quickChartData);
     setIsBacktesting(false);
   };
 
@@ -170,7 +182,8 @@ export const StrategyBacktestEditor = ({
       alpha: 0.12,
       beta: 0.38,
       volatility: 0.15,
-      isLiveExecution: true
+      isLiveExecution: true,
+      showExecution: true // Flag to show algorithm execution
     };
     
     onBacktestComplete(results);
@@ -225,7 +238,7 @@ export const StrategyBacktestEditor = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-8 text-xs border-gray-300 text-gray-700"
+                className="h-8 text-xs bg-black text-white hover:bg-gray-800"
                 onClick={handleBuildAlgorithm}
                 disabled={isBacktesting}
               >
@@ -320,7 +333,7 @@ export const StrategyBacktestEditor = ({
             <Button 
               onClick={handleRunFullBacktest}
               disabled={isRunningFullBacktest}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white h-8 text-xs"
+              className="w-full bg-black hover:bg-gray-800 text-white h-8 text-xs"
             >
               {isRunningFullBacktest ? (
                 <>
@@ -372,6 +385,44 @@ export const StrategyBacktestEditor = ({
               for detailed metrics.
             </div>
           </div>
+
+          {/* Quick Chart Display */}
+          {chartData.length > 0 && (
+            <div className="mt-4 p-3 bg-white border rounded">
+              <div className="text-xs text-gray-600 mb-2">Quick Backtest Results</div>
+              <ResponsiveContainer width="100%" height={120}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="date" hide />
+                  <YAxis hide />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #d1d5db',
+                      borderRadius: '4px',
+                      fontSize: '10px'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="portfolio" 
+                    stroke="#2563eb" 
+                    strokeWidth={2}
+                    name="Algorithm"
+                    dot={false}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="benchmark" 
+                    stroke="#dc2626" 
+                    strokeWidth={2}
+                    name="Benchmark"
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
         {/* Logs Section */}
@@ -405,7 +456,7 @@ export const StrategyBacktestEditor = ({
                   <>
                     <div className="text-yellow-400">[2024-06-10 14:30:21] Starting full backtest...</div>
                     <div className="text-yellow-400">[2024-06-10 14:30:22] Processing historical data...</div>
-                    <div className="text-yellow-400 animate-pulse">[2024-06-10 14:30:23] Calculating results...</div>
+                    <div className="text-yellow-400 animate-pulse">[2024-06-10 14:30:23] Executing algorithm...</div>
                   </>
                 )}
                 {!isBacktesting && !isRunningFullBacktest && (
