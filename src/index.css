@@ -35,6 +35,16 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Light theme trading colors */
+    --trading-bg: 249 250 251;
+    --trading-surface: 255 255 255;
+    --trading-accent: 37 99 235;
+    --trading-success: 34 197 94;
+    --trading-danger: 239 68 68;
+    --trading-warning: 245 158 11;
+    --trading-text: 15 23 42;
+    --trading-muted: 100 116 139;
   }
 
   .dark {
@@ -65,6 +75,16 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Dark theme trading colors */
+    --trading-bg: 10 14 26;
+    --trading-surface: 26 31 46;
+    --trading-accent: 37 99 235;
+    --trading-success: 16 185 129;
+    --trading-danger: 239 68 68;
+    --trading-warning: 245 158 11;
+    --trading-text: 226 232 240;
+    --trading-muted: 100 116 139;
   }
 }
 
@@ -74,7 +94,7 @@
   }
 
   body {
-    @apply bg-trading-bg text-trading-text font-mono;
+    @apply bg-background text-foreground font-mono transition-colors;
   }
 }
 
@@ -85,5 +105,33 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  
+  .trading-bg {
+    background: hsl(var(--trading-bg));
+  }
+  
+  .trading-surface {
+    background: hsl(var(--trading-surface));
+  }
+  
+  .trading-text {
+    color: hsl(var(--trading-text));
+  }
+  
+  .trading-muted {
+    color: hsl(var(--trading-muted));
+  }
+  
+  .trading-accent {
+    color: hsl(var(--trading-accent));
+  }
+  
+  .trading-success {
+    color: hsl(var(--trading-success));
+  }
+  
+  .trading-danger {
+    color: hsl(var(--trading-danger));
   }
 }

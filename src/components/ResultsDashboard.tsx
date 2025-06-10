@@ -1,13 +1,17 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Target, Activity } from "lucide-react";
+import { TrendingUp, TrendingDown, Target, Activity, Play, Pause } from "lucide-react";
+import { AnimatedChart } from "./AnimatedChart";
+import { Button } from "@/components/ui/button";
 
 interface ResultsDashboardProps {
   results: any;
 }
 
 export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+
   // Sample equity curve data
   const equityCurveData = [
     { date: "2003", strategy: 100000, benchmark: 100000 },
@@ -73,7 +77,7 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
   return (
     <div className="p-6 space-y-6 bg-trading-bg min-h-screen">
       {/* Header Section */}
-      <div className="bg-trading-surface rounded-lg p-6 border border-trading-accent/20">
+      <div className="bg-trading-surface rounded-lg p-6 border border-trading-accent/20 backdrop-blur-sm">
         <div className="flex justify-between items-start mb-4">
           <div>
             <h2 className="text-2xl font-bold text-trading-text mb-2">Backtest Results</h2>
@@ -85,12 +89,21 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
             </div>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-trading-accent text-white rounded text-sm hover:bg-trading-accent/80">
+            <Button 
+              onClick={() => setIsAnimating(!isAnimating)}
+              variant="outline"
+              size="sm"
+              className="border-trading-accent/30"
+            >
+              {isAnimating ? <Pause size={16} /> : <Play size={16} />}
+              {isAnimating ? "Pause" : "Animate"}
+            </Button>
+            <Button className="bg-trading-accent hover:bg-trading-accent/80" size="sm">
               Live Trade Algorithm
-            </button>
-            <button className="px-4 py-2 bg-trading-accent text-white rounded text-sm hover:bg-trading-accent/80">
+            </Button>
+            <Button className="bg-trading-accent hover:bg-trading-accent/80" size="sm">
               Share Results
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -179,8 +192,8 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
 
         {/* Charts Section */}
         <div className="col-span-3 space-y-6">
-          {/* Cumulative Performance Chart */}
-          <Card className="bg-trading-surface border-trading-accent/20">
+          {/* Enhanced Cumulative Performance Chart */}
+          <Card className="bg-trading-surface/80 backdrop-blur-sm border-trading-accent/20">
             <CardHeader className="pb-4">
               <div className="flex justify-between items-center">
                 <div>
@@ -194,41 +207,15 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={equityCurveData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
-                  <YAxis stroke="#64748b" fontSize={12} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#1a1f2e', 
-                      border: '1px solid #2563eb',
-                      borderRadius: '6px',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="strategy" 
-                    stroke="#2563eb" 
-                    strokeWidth={2}
-                    name="Algorithm"
-                    dot={false}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="benchmark" 
-                    stroke="#ef4444" 
-                    strokeWidth={2}
-                    name="Benchmark (SPY)"
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <AnimatedChart 
+                data={equityCurveData} 
+                isAnimating={isAnimating}
+                animationSpeed={200}
+              />
             </CardContent>
           </Card>
 
-          {/* Custom Data - Leverage Chart */}
+          {/* Enhanced Leverage Chart */}
           <Card className="bg-trading-surface border-trading-accent/20">
             <CardHeader className="pb-4">
               <div className="text-sm text-trading-muted">Custom data: <span className="text-trading-accent">■ Leverage 0.41</span></div>
@@ -260,7 +247,7 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
             </CardContent>
           </Card>
 
-          {/* Weekly Returns Chart */}
+          {/* Enhanced Weekly Returns Chart */}
           <Card className="bg-trading-surface border-trading-accent/20">
             <CardHeader className="pb-4">
               <div className="text-sm text-trading-muted">Weekly returns <span className="text-trading-success">$21,491</span></div>
