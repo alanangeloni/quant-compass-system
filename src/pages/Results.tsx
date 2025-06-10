@@ -3,10 +3,12 @@ import { ThemeProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Sidebar } from "@/components/Sidebar";
 import { ResultsDashboard } from "@/components/ResultsDashboard";
+import { useLocation } from "react-router-dom";
 
 const Results = () => {
-  // In a real app, you'd get this from state management or URL params
-  const backtestResults = null;
+  const location = useLocation();
+  // Get backtest results from navigation state or use null
+  const backtestResults = location.state?.results || null;
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" forcedTheme="light">

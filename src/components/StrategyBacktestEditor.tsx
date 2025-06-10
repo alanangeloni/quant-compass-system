@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,63 +7,43 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Play, Save, RefreshCw, Settings, Edit2 } from "lucide-react";
 
-const defaultStrategy = `# For this example, we're going to write a simple momentum
-# script.
-# When the stock goes up quickly, we're going to buy;
-# when it goes down we're going to sell.
-# Hopefully we'll ride the waves.
-
-# To run an algorithm in Quantopian, you need two functions:
-# initialize and handle_data.
+const defaultStrategy = `# Moving Average Crossover Strategy
+# This strategy buys when the 10-day moving average crosses above the 30-day moving average
+# and sells when it crosses below
 
 def initialize(context):
-    # The initialize function sets any data or variables that
-    # you'll use in your algorithm.
-    # For instance, you'll want to define the security
-    # (or securities) you want to backtest.
-    # You'll also want to define any parameters or values
-    # you're going to use later.
-    # It's only called once at the beginning of your
-    # algorithm.
-    
-    # In our example, we're looking at Apple.
-    # If you re-type this line you'll see
-    # the auto-complete that is available for security.
+    # Define the stock we want to trade
     context.security = symbol('AAPL')
+    context.bought = False
+    context.last_price = 0
 
-# The handle_data function is where the real work is done.
-# This function is run either every minute
-# (in live trading and minute backtesting mode)
-# or every day (in daily backtesting mode).
 def handle_data(context, data):
-    # We've built a handful of useful data transforms for you
-    # to use.
+    # Get historical price data
+    prices = data.history(context.security, 'price', 50, '1d')
     
-    # history() gives you a number of bars of history for you
-    # to use.
-    # We're using bars for a ten day/minute moving
-    # average.
-    ma1 = data.history(context.security, 'price', 10, '1d').mean()
+    # Calculate moving averages
+    ma_short = prices.tail(10).mean()  # 10-day MA
+    ma_long = prices.tail(30).mean()   # 30-day MA
     
-    # Let's try a 30 day/minute moving average too.
-    ma2 = data.history(context.security, 'price', 30, '1d').mean()
+    current_price = data.current(context.security, 'price')
     
-    # Let's also look at the current price of the stock
-    price = data.current(context.security, 'price')
-    
-    # If our stock is currently listed on a major exchange
+    # Trading logic
     if data.can_trade(context.security):
-        # If ma1 is above ma2, then we want to buy
-        # (Here we're saying we want to order 10 shares)
-        if ma1 > ma2:
-            order(context.security, +10)
-        # If ma1 is below ma2, then we want to sell
-        # (here we're saying we want to sell 10 shares)
-        elif ma1 < ma2:
-            order(context.security, -10)
+        # Buy signal: short MA crosses above long MA
+        if ma_short > ma_long and not context.bought:
+            order_target_percent(context.security, 1.0)  # Invest 100%
+            context.bought = True
+            log.info(f"BUY signal at ${current_price:.2f}")
+            
+        # Sell signal: short MA crosses below long MA  
+        elif ma_short < ma_long and context.bought:
+            order_target_percent(context.security, 0.0)  # Sell all
+            context.bought = False
+            log.info(f"SELL signal at ${current_price:.2f}")
     
-    # You can use the record() method to track any custom signal.
-    record(ma1=ma1, ma2=ma2, price=price)`;
+    # Record data for plotting
+    record(price=current_price, ma_short=ma_short, ma_long=ma_long)
+    context.last_price = current_price`;
 
 interface StrategyBacktestEditorProps {
   onStrategyChange: (strategy: string) => void;
@@ -78,7 +57,7 @@ export const StrategyBacktestEditor = ({
   onNavigateToResults 
 }: StrategyBacktestEditorProps) => {
   const [strategy, setStrategy] = useState(defaultStrategy);
-  const [algorithmName, setAlgorithmName] = useState("Sample Algorithm for a Basic Strategy 1");
+  const [algorithmName, setAlgorithmName] = useState("Moving Average Crossover Strategy");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isBacktesting, setIsBacktesting] = useState(false);
   const [isRunningFullBacktest, setIsRunningFullBacktest] = useState(false);
@@ -102,19 +81,22 @@ export const StrategyBacktestEditor = ({
 
   const handleRunFullBacktest = async () => {
     setIsRunningFullBacktest(true);
-    console.log("Running full backtest");
+    console.log("Running full backtest with strategy:", strategy);
     
-    // Simulate backtest execution
+    // Simulate backtest execution with live updates
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Generate mock results
+    // Generate results with the strategy code
     const results = {
+      strategy: strategy,
+      algorithmName: algorithmName,
       totalReturn: 238.2,
       sharpeRatio: 1.10,
       maxDrawdown: -37.7,
       alpha: 0.12,
       beta: 0.38,
-      volatility: 0.15
+      volatility: 0.15,
+      isLiveExecution: true
     };
     
     onBacktestComplete(results);

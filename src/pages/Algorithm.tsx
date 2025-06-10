@@ -12,7 +12,7 @@ const Algorithm = () => {
   const navigate = useNavigate();
 
   const handleNavigateToResults = () => {
-    navigate("/results");
+    navigate("/results", { state: { results: backtestResults } });
   };
 
   return (

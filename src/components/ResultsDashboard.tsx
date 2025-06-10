@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Target, Activity, Play, Pause } from "lucide-react";
 import { AnimatedChart } from "./AnimatedChart";
+import { AlgorithmExecutionViewer } from "./AlgorithmExecutionViewer";
 import { Button } from "@/components/ui/button";
 
 interface ResultsDashboardProps {
@@ -77,6 +77,14 @@ export const ResultsDashboard = ({ results }: ResultsDashboardProps) => {
 
   return (
     <div className="p-4 space-y-4 bg-white min-h-screen">
+      {/* Algorithm Execution Viewer - Show this first if we have strategy code */}
+      {results.strategy && results.algorithmName && (
+        <AlgorithmExecutionViewer 
+          strategy={results.strategy} 
+          algorithmName={results.algorithmName}
+        />
+      )}
+
       {/* Header Section */}
       <div className="bg-white">
         <div className="flex justify-between items-start mb-4">
