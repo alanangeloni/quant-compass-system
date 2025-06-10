@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Code,
@@ -11,21 +12,22 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface SidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
-}
+export const Sidebar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-export const Sidebar = ({ activeTab, onTabChange, isCollapsed, setIsCollapsed }: SidebarProps) => {
   const menuItems = [
-    { id: "dashboard", icon: Home, label: "Dashboard" },
-    { id: "strategy", icon: Code, label: "Algorithm & Backtest" },
-    { id: "results", icon: BarChart, label: "Results" },
-    { id: "history", icon: Clock, label: "History" },
-    { id: "settings", icon: Settings, label: "Settings" },
+    { id: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
+    { id: "algorithm", icon: Code, label: "Algorithm & Backtest", path: "/algorithm" },
+    { id: "results", icon: BarChart, label: "Results", path: "/results" },
+    { id: "history", icon: Clock, label: "History", path: "/history" },
+    { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
   ];
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className={cn(
@@ -54,12 +56,12 @@ export const Sidebar = ({ activeTab, onTabChange, isCollapsed, setIsCollapsed }:
               <button
                 className={cn(
                   "flex items-center w-full px-6 py-3 text-sm font-medium transition-colors hover:bg-gray-100",
-                  activeTab === item.id
+                  location.pathname === item.path
                     ? "bg-gray-100 text-blue-600"
                     : "text-gray-700",
                   isCollapsed && "px-4 justify-center"
                 )}
-                onClick={() => onTabChange(item.id)}
+                onClick={() => handleNavigation(item.path)}
                 title={isCollapsed ? item.label : undefined}
               >
                 <item.icon className={cn("w-4 h-4", !isCollapsed && "mr-2")} />
