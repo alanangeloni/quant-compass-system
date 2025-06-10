@@ -2,10 +2,12 @@
 import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Menu } from "lucide-react";
 import { Sidebar } from "@/components/Sidebar";
 import { Dashboard } from "@/components/Dashboard";
 import { StrategyBacktestEditor } from "@/components/StrategyBacktestEditor";
 import { ResultsDashboard } from "@/components/ResultsDashboard";
+import { SheetTrigger } from "@/components/ui/sheet";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -60,7 +62,12 @@ const Index = () => {
           <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
           <div className="flex-1 overflow-auto bg-white">
             <div className="p-4 border-b border-gray-200 bg-white">
-              <SidebarTrigger />
+              <SheetTrigger asChild>
+                <button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open sidebar</span>
+                </button>
+              </SheetTrigger>
             </div>
             {renderContent()}
           </div>
