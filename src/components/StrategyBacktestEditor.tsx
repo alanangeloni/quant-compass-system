@@ -81,6 +81,7 @@ export const StrategyBacktestEditor = ({
   const [algorithmName, setAlgorithmName] = useState("Sample Algorithm for a Basic Strategy 1");
   const [isEditingName, setIsEditingName] = useState(false);
   const [isBacktesting, setIsBacktesting] = useState(false);
+  const [isRunningFullBacktest, setIsRunningFullBacktest] = useState(false);
   const [activeTab, setActiveTab] = useState("algorithm");
 
   const handleSave = () => {
@@ -99,8 +100,25 @@ export const StrategyBacktestEditor = ({
     setIsEditingName(false);
   };
 
-  const handleRunFullBacktest = () => {
+  const handleRunFullBacktest = async () => {
+    setIsRunningFullBacktest(true);
     console.log("Running full backtest");
+    
+    // Simulate backtest execution
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Generate mock results
+    const results = {
+      totalReturn: 238.2,
+      sharpeRatio: 1.10,
+      maxDrawdown: -37.7,
+      alpha: 0.12,
+      beta: 0.38,
+      volatility: 0.15
+    };
+    
+    onBacktestComplete(results);
+    setIsRunningFullBacktest(false);
     onNavigateToResults();
   };
 
@@ -254,10 +272,20 @@ export const StrategyBacktestEditor = ({
 
             <Button 
               onClick={handleRunFullBacktest}
+              disabled={isRunningFullBacktest}
               className="w-full bg-green-600 hover:bg-green-700 text-white h-8 text-sm"
             >
-              <Play className="h-3 w-3 mr-1" />
-              Run Full Backtest
+              {isRunningFullBacktest ? (
+                <>
+                  <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+                  Running...
+                </>
+              ) : (
+                <>
+                  <Play className="h-3 w-3 mr-1" />
+                  Run Full Backtest
+                </>
+              )}
             </Button>
           </div>
 
@@ -306,7 +334,19 @@ export const StrategyBacktestEditor = ({
                 <div>[2024-06-10 14:30:17] Backtesting engine initialized</div>
                 <div>[2024-06-10 14:30:18] Algorithm validation completed</div>
                 <div className="text-blue-400">[2024-06-10 14:30:19] Ready for backtesting</div>
-                <div className="text-yellow-400">[2024-06-10 14:30:20] Waiting for user input...</div>
+                {isBacktesting && (
+                  <div className="text-yellow-400">[2024-06-10 14:30:20] Running quick backtest...</div>
+                )}
+                {isRunningFullBacktest && (
+                  <>
+                    <div className="text-yellow-400">[2024-06-10 14:30:21] Starting full backtest...</div>
+                    <div className="text-yellow-400">[2024-06-10 14:30:22] Processing historical data...</div>
+                    <div className="text-yellow-400 animate-pulse">[2024-06-10 14:30:23] Calculating results...</div>
+                  </>
+                )}
+                {!isBacktesting && !isRunningFullBacktest && (
+                  <div className="text-yellow-400">[2024-06-10 14:30:20] Waiting for user input...</div>
+                )}
               </div>
             </div>
           </div>
