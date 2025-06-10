@@ -1,84 +1,98 @@
 
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Home,
-  Code,
-  BarChart,
-  Clock,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { BarChart3, Code2, TrendingUp, Settings, Play, History, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
-export const Sidebar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+interface AppSidebarProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
 
-  const menuItems = [
-    { id: "dashboard", icon: Home, label: "Dashboard", path: "/dashboard" },
-    { id: "algorithm", icon: Code, label: "Algorithm & Backtest", path: "/algorithm" },
-    { id: "results", icon: BarChart, label: "Results", path: "/results" },
-    { id: "history", icon: Clock, label: "History", path: "/history" },
-    { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
-  ];
+const navigation = [
+  { id: "dashboard", name: "Dashboard", icon: BarChart3 },
+  { id: "strategy", name: "Strategy", icon: Code2 },
+  { id: "backtest", name: "Backtest", icon: Play },
+  { id: "results", name: "Results", icon: TrendingUp },
+  { id: "history", name: "History", icon: History },
+  { id: "settings", name: "Settings", icon: Settings },
+];
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
+function AppSidebarContent({ activeTab, onTabChange }: AppSidebarProps) {
+  const { theme, setTheme } = useTheme();
+  const { state } = useSidebar();
 
   return (
-    <div className={cn(
-      "h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300",
-      isCollapsed ? "w-16" : "w-64"
-    )}>
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        {!isCollapsed && (
-          <div>
-            <h1 className="text-lg font-semibold text-gray-900">Trading Platform</h1>
-            <p className="text-sm text-gray-600">Manage your trading strategies</p>
+    <Sidebar className="border-r border-trading-accent/20">
+      <SidebarHeader className="p-6 border-b border-trading-accent/20">
+        <div className="flex items-center justify-between">
+          <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
+            <h1 className="text-xl font-bold text-trading-accent">QuantBacktest</h1>
+            <p className="text-sm text-trading-muted mt-1">Professional Trading Backtester</p>
           </div>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1 rounded-md hover:bg-gray-100 text-gray-500"
-        >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
-      </div>
-
-      <nav className="flex-1 py-4">
-        <ul>
-          {menuItems.map((item) => (
-            <li key={item.id}>
-              <button
-                className={cn(
-                  "flex items-center w-full px-6 py-3 text-sm font-medium transition-colors hover:bg-gray-100",
-                  location.pathname === item.path
-                    ? "bg-gray-100 text-blue-600"
-                    : "text-gray-700",
-                  isCollapsed && "px-4 justify-center"
-                )}
-                onClick={() => handleNavigation(item.path)}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <item.icon className={cn("w-4 h-4", !isCollapsed && "mr-2")} />
-                {!isCollapsed && item.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="px-6 py-4 border-t border-gray-200">
-        {!isCollapsed && (
-          <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} My Company
-          </p>
-        )}
-      </div>
-    </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="ml-2"
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </Button>
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      onClick={() => onTabChange(item.id)}
+                      isActive={activeTab === item.id}
+                      tooltip={item.name}
+                    >
+                      <Icon size={18} />
+                      <span>{item.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      
+      <SidebarFooter className="p-4 border-t border-trading-accent/20">
+        <div className={cn("bg-trading-accent/10 rounded-md p-3 transition-all", state === "collapsed" && "p-2")}>
+          <div className={cn("transition-opacity", state === "collapsed" && "opacity-0")}>
+            <div className="text-xs text-trading-muted mb-1">Portfolio Value</div>
+            <div className="text-lg font-bold text-trading-success">$125,847.92</div>
+            <div className="text-xs text-trading-success">+5.84% Today</div>
+          </div>
+          <div className={cn("transition-opacity", state === "expanded" && "opacity-0 absolute")}>
+            <div className="text-xs font-bold text-trading-success text-center">$125K</div>
+          </div>
+        </div>
+      </SidebarFooter>
+    </Sidebar>
   );
-};
+}
+
+export { AppSidebarContent as Sidebar };
