@@ -52,24 +52,24 @@ export const StrategyEditor = ({ onStrategyChange }: StrategyEditorProps) => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-white">
       <div>
-        <h2 className="text-2xl font-bold text-trading-text mb-2">Strategy Editor</h2>
-        <p className="text-trading-muted">Write and test your quantitative trading algorithms</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Strategy Editor</h2>
+        <p className="text-gray-600">Write and test your quantitative trading algorithms</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-trading-text">Algorithm Code</CardTitle>
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-gray-200">
+              <CardTitle className="text-gray-900">Algorithm Code</CardTitle>
               <div className="flex gap-2">
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={handleValidate}
                   disabled={isValidating}
-                  className="border-trading-accent/20 text-trading-accent hover:bg-trading-accent/10"
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
                 >
                   {isValidating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
                   Validate
@@ -77,18 +77,18 @@ export const StrategyEditor = ({ onStrategyChange }: StrategyEditorProps) => {
                 <Button 
                   size="sm"
                   onClick={handleSave}
-                  className="bg-trading-accent hover:bg-trading-accent/80"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   Save
                 </Button>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <Textarea
                 value={strategy}
                 onChange={(e) => setStrategy(e.target.value)}
-                className="min-h-[500px] font-mono text-sm bg-trading-bg border-trading-accent/20 text-trading-text resize-none"
+                className="min-h-[500px] font-mono text-sm bg-white border-gray-200 text-gray-900 resize-none"
                 placeholder="Write your trading strategy here..."
               />
             </CardContent>
@@ -96,52 +96,52 @@ export const StrategyEditor = ({ onStrategyChange }: StrategyEditorProps) => {
         </div>
 
         <div className="space-y-6">
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader>
-              <CardTitle className="text-trading-text">Strategy Parameters</CardTitle>
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardHeader className="border-b border-gray-200">
+              <CardTitle className="text-gray-900">Strategy Parameters</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-6 space-y-4">
               <div>
-                <label className="text-sm text-trading-muted mb-2 block">Initial Capital</label>
+                <label className="text-sm text-gray-600 mb-2 block">Initial Capital</label>
                 <input 
                   type="number" 
                   defaultValue={100000}
-                  className="w-full px-3 py-2 bg-trading-bg border border-trading-accent/20 rounded-md text-trading-text focus:ring-2 focus:ring-trading-accent/50 focus:border-trading-accent"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-sm text-trading-muted mb-2 block">Start Date</label>
+                <label className="text-sm text-gray-600 mb-2 block">Start Date</label>
                 <input 
                   type="date" 
                   defaultValue="2023-01-01"
-                  className="w-full px-3 py-2 bg-trading-bg border border-trading-accent/20 rounded-md text-trading-text focus:ring-2 focus:ring-trading-accent/50 focus:border-trading-accent"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-sm text-trading-muted mb-2 block">End Date</label>
+                <label className="text-sm text-gray-600 mb-2 block">End Date</label>
                 <input 
                   type="date" 
                   defaultValue="2024-01-01"
-                  className="w-full px-3 py-2 bg-trading-bg border border-trading-accent/20 rounded-md text-trading-text focus:ring-2 focus:ring-trading-accent/50 focus:border-trading-accent"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div>
-                <label className="text-sm text-trading-muted mb-2 block">Commission</label>
+                <label className="text-sm text-gray-600 mb-2 block">Commission</label>
                 <input 
                   type="number" 
                   step="0.01"
                   defaultValue={0.005}
-                  className="w-full px-3 py-2 bg-trading-bg border border-trading-accent/20 rounded-md text-trading-text focus:ring-2 focus:ring-trading-accent/50 focus:border-trading-accent"
+                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-trading-surface border-trading-accent/20">
-            <CardHeader>
-              <CardTitle className="text-trading-text">Quick Templates</CardTitle>
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardHeader className="border-b border-gray-200">
+              <CardTitle className="text-gray-900">Quick Templates</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="p-6 space-y-2">
               {[
                 "Simple Moving Average",
                 "Mean Reversion",
@@ -151,7 +151,7 @@ export const StrategyEditor = ({ onStrategyChange }: StrategyEditorProps) => {
               ].map((template, index) => (
                 <button
                   key={index}
-                  className="w-full text-left px-3 py-2 text-sm text-trading-muted hover:text-trading-text hover:bg-trading-accent/10 rounded-md transition-colors"
+                  className="w-full text-left px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
                 >
                   {template}
                 </button>
